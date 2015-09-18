@@ -1,3 +1,4 @@
+require 'byebug'
 class Hand
   attr_accessor :raw, :values, :suits
 
@@ -72,7 +73,7 @@ class Hand
   end
 
   def full_house?
-    of_a_kind(2) && of_a_kind(3)
+    of_a_kind(2).size == 1 && of_a_kind(3).size == 1
   end
   
   def high_card
@@ -80,7 +81,7 @@ class Hand
   end
 
   def straight?
-    consec?(@values.keys.sort)
+    consec?(@values.keys.sort) && @values.size == 5
   end
 
   def straight_flush?
@@ -109,12 +110,15 @@ class Hand
   end
 
   def value
-    {"hand_value": hand_value, 
-     "suits": @suits.size,
-     "raw": @raw,
-     "five": @values.select{|
-
-
+    {"hand_value" => hand_value,
+            "raw" => @raw,
+          "suits" => @suits,
+               4  => of_a_kind(4).keys.sort_by{|x| -x},
+               3  => of_a_kind(3).keys.sort_by{|x| -x},
+               2  => of_a_kind(2).keys.sort_by{|x| -x},
+               1  => of_a_kind(1).keys.sort_by{|x| -x}
+    }
+  end
 end
 
 class Game
@@ -131,43 +135,27 @@ class Game
   end
 
   def winner
-    return :player_one if @player_one.hand_value > @player_two.hand_value
-    return :player_two if @player_one.hand_value < @player_two.hand_value
-    return break_tie(@player_one.hand_value)
+    p1, p2 = @player_one.value, @player_two.value
+    #puts p1 if p1["hand_value"] > 2 || p2["hand_value"] > 2 
+    #puts p2 if p1["hand_value"] > 2 || p2["hand_value"] > 2
+    #byebug if p1["hand_value"] > 2 || p2["hand_value"] > 2
+    return :player_one if p1["hand_value"] > p2["hand_value"]
+    return :player_two if p1["hand_value"] < p2["hand_value"]
+    return break_tie(p1, p2)
   end
 
-  def break_tie(hand_value)
-    #puts "[#{@player_one.raw}] [#{@player_two.raw}]"
-    case hand_value
-      when 0
-        decide_high_card
-      when 1
-        decide_pairs
-      else
-        "#{@player_one.raw}, #{@player_two.raw}"
+  def break_tie(p1, p2)
+    return bbreak(p1[4], p2[4]) unless p1[4].size == 0 || bbreak(p1[4], p2[4]).nil?
+    return bbreak(p1[3], p2[3]) unless p1[3].size == 0 || bbreak(p1[3], p2[3]).nil?
+    return bbreak(p1[2], p2[2]) unless p1[2].size == 0 || bbreak(p1[2], p2[2]).nil?
+    return bbreak(p1[1], p2[1]) unless p1[1].size == 0 || bbreak(p1[1], p2[1]).nil?
+  end
+
+  def bbreak(p1, p2)
+    (0..p1.size-1).each do |i|
+      return :player_one if p1[i] > p2[i]
+      return :player_two if p1[i] < p2[i]
     end
-  end
-
-  def decide_high_card
-    return :player_one if @player_one.high_card > @player_two.high_card
-    return :player_two if @player_one.high_card < @player_two.high_card
-    return "#{@player_one.raw}, #{@player_two.raw}"
-  end
-
-  def decide_pairs
-    require 'byebug'
-    return :player_one if @player_one.cards(2)[0] > @player_two.cards(2)[0]
-    return :player_two if @player_one.cards(2)[0] < @player_two.cards(2)[0]
-    
-    
-    (0..min(@player_one.cards(1).size, @player_two.cards(1).size)).each do |i|
-      return :player_one if @player_one.cards(1)[i] > @player_two.cards(1)[i]
-      return :player_two if @player_one.cards(1)[i] < @player_two.cards(1)[i]
-    end
-  end
-
-  def min(x,y)
-    return x if x < y
-    return y
+    nil
   end
 end
