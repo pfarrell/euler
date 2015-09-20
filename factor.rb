@@ -7,6 +7,10 @@ class Integer
     return true
   end
 
+  def composite?
+    !prime?
+  end
+
   def factors
     ret = []
     return ret if self.prime? 
