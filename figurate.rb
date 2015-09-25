@@ -1,27 +1,27 @@
 class Numeric
 
   def triangle?
-    quadratic(0.5, 0.5, -1*self).select{|x| x.whole?}.size > 0
+    quadratic(0.5, 0.5, -1*self).select{|x| x.whole? && x > 0}.size > 0
   end
 
   def square?
-    Math.sqrt(self).whole?  
+    Math.sqrt(self).whole?
   end
 
   def pentagonal?
-    quadratic(1.5, -0.5, -1*self).select{|x| x.whole?}.size > 0
+    quadratic(1.5, -0.5, -1*self).select{|x| x.whole? && x > 0}.size > 0
   end
 
   def hexagonal?
-    quadratic(2, -1, -1*self).select{|x| x.whole?}.size > 0
+    quadratic(2, -1, -1*self).select{|x| x.whole? && x > 0}.size > 0
   end
 
   def heptagonal?
-    quadratic(2.5, -1.5, -1*self).select{|x| x.whole?}.size > 0 
+    quadratic(2.5, -1.5, -1*self).select{|x| x.whole? && x > 0}.size > 0 
   end
 
   def octagonal?
-    quadratic(3, -2, -1*self).select{|x| x.whole?}.size > 0
+    quadratic(3, -2, -1*self).select{|x| x.whole? && x > 0}.size > 0
   end
 
   def quadratic(a, b, c)
