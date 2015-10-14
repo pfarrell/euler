@@ -12,19 +12,21 @@ class Integer
   end
 
   def factors
-    ret = []
-    return ret if self.prime? 
-    curr = self
-    while curr > 1
-      if curr.prime?
-        ret << curr
-        break
-      else
-        ff = curr.first_factor
-        ret << ff
-        curr /= ff
+    ret = [1]
+    if !self.prime? 
+      curr = self
+      while curr > 1
+        if curr.prime?
+          ret << curr
+          break
+        else
+          ff = curr.first_factor
+          ret << ff
+          curr /= ff
+        end
       end
     end
+    ret << self
     ret
   end
 
@@ -35,6 +37,32 @@ class Integer
       return n if self % n == 0
     end
   end
+
+  def coprimes
+    ret = [1]
+    #require 'byebug'
+    #byebug
+    (2..self-1).map do |x| 
+      ret << x if self.factors.intersect(x.factors) == [1]
+    end
+    ret
+  end
 end
 
+class Array
+  def intersect(arr)
+    iter = []
+    ret = []
+    arr.map{|x| iter << x}
+    self.map{|x| iter << x}
+    iter.uniq.each do |x|
+      if(arr.select{|n| n == x}.size >= 1) 
+        if(self.select{|n| n == x}.size >= 1)
+          ret << x
+        end
+      end
+    end
+    ret
+  end
+end
 
