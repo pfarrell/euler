@@ -1,0 +1,19 @@
+matching a pattern nn..n means the range nn00n + x*110 for x (0..9)
+matching a pattern n.n.n means the range n0n0n + x*1010 for x (0..9)
+
+all possible 5-digit patterns
+[00000, 00001, 00010, 00011, 00100, 00101, 00110, 00111, 
+ 01000, 01001, 01010, 01011, 01100, 01101, 01110, 01111, 
+ 10000, 10010, 10011, 10100, 10101, 10110, 10111, 11000, 
+ 11001, 11010, 11011, 11100, 11101, 11110, 11111]
+ 
+checking a candidate means checking 10 versions
+
+00001 yields 9^4 candidate combinations
+01010 yields 9^3 candidate combinations
+10011 yields 9^2 candidate combinations
+11101 yields 9^1 candidate combinations
+
+we could look at a number and decide which pattern it could fit and check
+only candidates from there. This might lead to redundancy unless pattern checking was 
+smart enough to bail if it'd have been previously checked...

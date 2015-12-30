@@ -40,8 +40,6 @@ class Integer
 
   def coprimes
     ret = [1]
-    #require 'byebug'
-    #byebug
     (2..self-1).map do |x| 
       ret << x if self.factors.intersect(x.factors) == [1]
     end
